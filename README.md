@@ -62,3 +62,5 @@ Para correr la aaplicaci√≥n en un entorno docker tenga en cuenta la configuraci√
 ```bash
 docker compose up --build -d
 ```
+
+@Autor Albert Ospina

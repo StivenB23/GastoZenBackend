@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # Servicio de la aplicación Node/Express
+  app:
+    build: .
+    container_name: my-express-app
+    ports:
+      - "3300:3300"
+    networks:
+      - redBackendDB
+
+  # Servicio de MongoDB
+  mongodb:
+    image: mongo
+    container_name: dbGastoZen
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - redBackendDB
+
+# Volumen para persistencia de MongoDB
+volumes:
+  mongo-data:
+
+# Definir la red compartida
+networks:
+  redBackendDB:
+    driver: bridge

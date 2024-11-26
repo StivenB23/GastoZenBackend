@@ -91,3 +91,8 @@ export const requestPasswordResetService = async (email) => {
     await sendEmail(user.email, "Password Reset", `Reset your password: ${resetLink}`);
     return resetLink;
 };
+
+export const createIncomeService = async (incomeData) => {
+    const income = new incomeModel(incomeData);
+    return await income.save();
+};

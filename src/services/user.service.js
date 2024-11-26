@@ -52,3 +52,16 @@ export const getExpensesByCategoryService = async (userId) => {
     ]);
     return expenses;
 };
+
+export const checkMonthlyLimitService = async (userId, limit) => {
+    const startOfMonth = new Date(new Date().setDate(1));
+    const totalExpenses = await expenseModel.aggregate([
+        { $match: { userId, date: { $gte: startOfMonth } } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+    ]);
+    const total = totalExpenses[0]?.total || 0;
+    if (total > limit) {
+        return { limitExceeded: true, total };
+    }
+    return { limitExceeded: false, total };
+};

@@ -81,3 +81,13 @@ export const uploadExpensesCSVService = async (filePath, userId) => {
             .on("error", reject);
     });
 };
+
+export const requestPasswordResetService = async (email) => {
+    const user = await getUserByEmailService(email);
+    if (!user) throw new Error("User not found");
+
+    const token = generateTokenJWT({ sub: user._id }, "1h");
+    const resetLink = `https://example.com/reset-password?token=${token}`;
+    await sendEmail(user.email, "Password Reset", `Reset your password: ${resetLink}`);
+    return resetLink;
+};

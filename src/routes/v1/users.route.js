@@ -7,5 +7,6 @@ router.post('/users', createUser)
 router.post('/expenses/categories', createUser)
 router.post('/expenses/check-limit', createUser)
 router.post('/expenses/upload', createUser)
+router.post('/auth/forgot-password', createUser)
 
 export default router;

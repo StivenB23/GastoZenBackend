@@ -44,3 +44,11 @@ export const deleteUserService = async (userId) => {
     }
     return user;
 }
+
+export const getExpensesByCategoryService = async (userId) => {
+    const expenses = await expenseModel.aggregate([
+        { $match: { userId } },
+        { $group: { _id: "$category", total: { $sum: "$amount" } } }
+    ]);
+    return expenses;
+};

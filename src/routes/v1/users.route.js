@@ -6,5 +6,6 @@ router.get('/', () => { console.log(`sss`); })
 router.post('/users', createUser)
 router.post('/expenses/categories', createUser)
 router.post('/expenses/check-limit', createUser)
+router.post('/expenses/upload', createUser)
 
 export default router;

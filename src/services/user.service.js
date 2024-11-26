@@ -65,3 +65,19 @@ export const checkMonthlyLimitService = async (userId, limit) => {
     }
     return { limitExceeded: false, total };
 };
+
+export const uploadExpensesCSVService = async (filePath, userId) => {
+    const expenses = [];
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(filePath)
+            .pipe(csvParser())
+            .on("data", (row) => {
+                expenses.push({ ...row, userId });
+            })
+            .on("end", async () => {
+                await expenseModel.insertMany(expenses);
+                resolve(expenses);
+            })
+            .on("error", reject);
+    });
+};

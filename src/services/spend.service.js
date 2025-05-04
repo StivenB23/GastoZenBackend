@@ -64,7 +64,7 @@ export const getActivitiesSpendService = async (userId) => {
          }
       },
       {
-         $sort: { 
+         $sort: {
             _id: 1 // Orden ascendente por fecha (1 para ascendente, -1 para descendente)
          }
       }
@@ -73,6 +73,11 @@ export const getActivitiesSpendService = async (userId) => {
 }
 
 export const getSpendUserByIdService = async (userId) => {
-   const spends = await spendModel.find({ user:userId}).populate("category")
+   const spends = await spendModel.find({ user: userId }).populate("category")
    return spends;
+}
+
+export const getStadisticsSpendService = async () => {
+   const categories = await spendModel.find({}).populate("category");
+   return categories;
 }

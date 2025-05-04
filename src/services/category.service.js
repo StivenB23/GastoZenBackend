@@ -17,3 +17,8 @@ export const uploadDataCategoryService = async () => {
         await categoryModel.insertMany([{ name: "Entretenimiento" }, { name: "Necesidades Básicas" }, { name: "Diversión" }, { name: "Amigos" }, { name: "Deudas" }]);
     }
 }
+
+export const getStadisticsCategoriesService = async () => {
+    const categories = await categoryModel.find({}, { name: 1 });
+    return categories;
+}

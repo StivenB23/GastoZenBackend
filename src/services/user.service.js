@@ -44,3 +44,55 @@ export const deleteUserService = async (userId) => {
     }
     return user;
 }
+
+export const getExpensesByCategoryService = async (userId) => {
+    const expenses = await expenseModel.aggregate([
+        { $match: { userId } },
+        { $group: { _id: "$category", total: { $sum: "$amount" } } }
+    ]);
+    return expenses;
+};
+
+export const checkMonthlyLimitService = async (userId, limit) => {
+    const startOfMonth = new Date(new Date().setDate(1));
+    const totalExpenses = await expenseModel.aggregate([
+        { $match: { userId, date: { $gte: startOfMonth } } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+    ]);
+    const total = totalExpenses[0]?.total || 0;
+    if (total > limit) {
+        return { limitExceeded: true, total };
+    }
+    return { limitExceeded: false, total };
+};
+
+export const uploadExpensesCSVService = async (filePath, userId) => {
+    const expenses = [];
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(filePath)
+            .pipe(csvParser())
+            .on("data", (row) => {
+                expenses.push({ ...row, userId });
+            })
+            .on("end", async () => {
+                await expenseModel.insertMany(expenses);
+                resolve(expenses);
+            })
+            .on("error", reject);
+    });
+};
+
+export const requestPasswordResetService = async (email) => {
+    const user = await getUserByEmailService(email);
+    if (!user) throw new Error("User not found");
+
+    const token = generateTokenJWT({ sub: user._id }, "1h");
+    const resetLink = `https://example.com/reset-password?token=${token}`;
+    await sendEmail(user.email, "Password Reset", `Reset your password: ${resetLink}`);
+    return resetLink;
+};
+
+export const createIncomeService = async (incomeData) => {
+    const income = new incomeModel(incomeData);
+    return await income.save();
+};
